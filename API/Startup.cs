@@ -37,11 +37,21 @@ namespace API
 
             services.AddDbContext<PaymentDetailContext>(options => 
             options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyHeader().WithOrigins("https://localhost:4200");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("CorsPolicy");
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
